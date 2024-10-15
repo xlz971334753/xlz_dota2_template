@@ -2,7 +2,7 @@
 import "sunlight-dota2-utils/dist/index";
 import "./extends/index_server";
 import "./utils/_index";
-import { ActivateModules } from "./modules";
+import { ActivateModules } from "./modules/_index";
 import Precache from "./precache";
 
 Object.assign(getfenv(), {
