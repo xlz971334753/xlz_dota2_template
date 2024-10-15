@@ -1,8 +1,9 @@
 // NPM包和扩展
 import "sunlight-dota2-utils/dist/index";
-import "./utils/index";
+import "./extends/index_server";
+import "./utils/_index";
 import { ActivateModules } from "./modules";
-import Precache from "./utils/precache";
+import Precache from "./precache";
 
 Object.assign(getfenv(), {
     Activate: () => {
