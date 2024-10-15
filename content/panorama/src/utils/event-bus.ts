@@ -1,6 +1,6 @@
-import { DependencyList, useEffect } from 'react';
-import type { LocalEvent } from '../def/local_event_def';
-import { EventEmitter } from 'events';
+import { DependencyList, useEffect } from "react";
+import type { LocalEvent } from "../def/local_event_def";
+import { EventEmitter } from "events";
 
 export function emitLocalEvent<EName extends keyof LocalEvent, EData extends LocalEvent[EName]>(eventName: EName, eventData: EData, ...args: any[]) {
     GameUI.CustomUIConfig().EventBus!.emit(eventName, eventData, ...args);

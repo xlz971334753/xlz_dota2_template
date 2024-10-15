@@ -17,33 +17,57 @@
     // }
     "return if not server": {
         "scope": "javascript,typescript",
-        "prefix": "ifnotserver",
-        "body": ["if (!IsServer()) return;"],
-        "description": "fast type of if not is server"
+        "prefix": "if-not-server",
+        "body": ["if (!IsServer()) return"],
+        "description": "快速键入if (!IsServer()) return"
     },
-    "get special value": {
+    "return if client": {
         "scope": "javascript,typescript",
-        "prefix": "letspecialvalue",
-        "body": ["let $1 = ability.GetSpecialValueFor('$2')", "$3"],
-        "description": "fast type of if not is server"
+        "prefix": "if-client",
+        "body": ["if (IsClient()) return"],
+        "description": "快速键入 if not is server"
     },
     "get caster": {
         "scope": "javascript,typescript",
-        "prefix": "letcaster",
+        "prefix": "let-caster",
         "body": ["let caster = this.GetCaster()"],
-        "description": "fast type of if not is server"
+        "description": "快速键入 if not is server"
     },
     "get ability": {
         "scope": "javascript,typescript",
-        "prefix": "letability",
-        "body": ["let ability = this.GetAbility();"],
-        "description": "fast type of if not is server"
+        "prefix": "let-ability",
+        "body": ["let ability = this.GetAbility()"],
+        "description": "快速键入 if not is server"
     },
     "get parent": {
         "scope": "javascript,typescript",
-        "prefix": "letparent",
-        "body": ["let parent = this.GetParent();"],
-        "description": "fast type of if not is server"
+        "prefix": "let-parent",
+        "body": ["let parent = this.GetParent()"],
+        "description": "快速键入 if not is server"
+    },
+    "return if valid value": {
+        "scope": "javascript,typescript",
+        "prefix": "if-is-valid",
+        "body": ["if (IsValid(${1|parent,caster,attacker,victim,ability,modifier|})) {", "    $0", "}"],
+        "description": "快速键入is valid"
+    },
+    "return if valid alive": {
+        "scope": "javascript,typescript",
+        "prefix": "if-alive",
+        "body": ["if (IsValidAlive(${1|parent,caster,attacker,victim|})) {", "    $0", "}"],
+        "description": "快速键入is valid"
+    },
+    "return if not valid value": {
+        "scope": "javascript,typescript",
+        "prefix": "if-not-is-valid",
+        "body": ["if (!IsValid(${1|parent,caster,attacker,victim,ability,modifier|})) return;"],
+        "description": "快速键入is !valid"
+    },
+    "return if not valid alive": {
+        "scope": "javascript,typescript",
+        "prefix": "if-not-alive",
+        "body": ["if (!IsValidAlive(${1|parent,caster,attacker,victim|})) return;"],
+        "description": "快速键入is !validalive"
     },
     "rootForReactPanorama": {
         "prefix": "root",
@@ -59,5 +83,17 @@
             "</root>"
         ],
         "description": "create a root element"
+    },
+    "modifier state judgment": {
+        "scope": "javascript,typescript",
+        "prefix": "modifier-property-judgment",
+        "body": [
+            "IsDebuff() { return false; };",
+            "IsHidden() { return true; };",
+            "IsPurgable() { return false; };",
+            "IsPurgeException() { return false; };",
+            "RemoveOnDeath() { return false; };"
+        ],
+        "description": "modifier的常用判断"
     }
 }

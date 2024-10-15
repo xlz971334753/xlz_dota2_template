@@ -1,6 +1,6 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useState, useCallback } from 'react';
-import useIsComponentMounted from './useIsComponnetMounted';
+import type { Dispatch, SetStateAction } from "react";
+import { useState, useCallback } from "react";
+import useIsComponentMounted from "./useIsComponnetMounted";
 
 /**
  * Like React's [useState](https://reactjs.org/docs/hooks-reference.html#usestate)
@@ -17,7 +17,7 @@ export default function useStateIfMounted<S>(initialValue: S | (() => S)): [S, D
     const isComponentMounted = useIsComponentMounted();
     const [state, setState] = useState(initialValue);
     const newSetState = useCallback(
-        value => {
+        (value) => {
             if (isComponentMounted.current) {
                 setState(value);
             }

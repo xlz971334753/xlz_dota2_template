@@ -12,7 +12,7 @@ export interface EventObject {
     type: string;
 }
 
-export type InitEvent = { type: 'xstate.init' };
+export type InitEvent = { type: "xstate.init" };
 
 export type ContextFrom<T> = ReturnTypeOrValue<T> extends infer R
     ? R extends StateMachine.Machine<infer TContext, any, any>
@@ -65,7 +65,7 @@ export namespace StateMachine {
 
     export type ActionFunction<TContext extends object, TEvent extends EventObject> = (context: TContext, event: TEvent | InitEvent) => void;
 
-    export type AssignAction = 'xstate.assign';
+    export type AssignAction = "xstate.assign";
 
     export interface AssignActionObject<TContext extends object, TEvent extends EventObject> extends ActionObject<TContext, TEvent> {
         type: AssignAction;
@@ -80,11 +80,11 @@ export namespace StateMachine {
               cond?: (context: TContext, event: TEvent) => boolean;
           };
     export interface State<TContext extends object, TEvent extends EventObject, TState extends Typestate<TContext>> {
-        value: TState['value'];
+        value: TState["value"];
         context: TContext;
         actions: Array<ActionObject<TContext, TEvent>>;
         changed?: boolean | undefined;
-        matches: <TSV extends TState['value']>(value: TSV) => this is TState extends { value: TSV } ? TState & { value: TSV } : never;
+        matches: <TSV extends TState["value"]>(value: TSV) => this is TState extends { value: TSV } ? TState & { value: TSV } : never;
     }
 
     export type AnyMachine = StateMachine.Machine<any, any, any>;
@@ -102,9 +102,9 @@ export namespace StateMachine {
         initial: string;
         context?: TContext;
         states: {
-            [key in TState['value']]: {
+            [key in TState["value"]]: {
                 on?: {
-                    [K in TEvent['type']]?: SingleOrArray<Transition<TContext, TEvent extends { type: K } ? TEvent : never>>;
+                    [K in TEvent["type"]]?: SingleOrArray<Transition<TContext, TEvent extends { type: K } ? TEvent : never>>;
                 };
                 exit?: SingleOrArray<Action<TContext, TEvent>>;
                 entry?: SingleOrArray<Action<TContext, TEvent>>;
@@ -115,7 +115,7 @@ export namespace StateMachine {
     export interface Machine<TContext extends object, TEvent extends EventObject, TState extends Typestate<TContext>> {
         config: StateMachine.Config<TContext, TEvent, TState>;
         initialState: State<TContext, TEvent, TState>;
-        transition: (state: string | State<TContext, TEvent, TState>, event: TEvent['type'] | TEvent) => State<TContext, TEvent, TState>;
+        transition: (state: string | State<TContext, TEvent, TState>, event: TEvent["type"] | TEvent) => State<TContext, TEvent, TState>;
     }
 
     export type StateListener<T extends AnyState> = (state: T) => void;
@@ -125,11 +125,11 @@ export namespace StateMachine {
         TEvent extends EventObject,
         TState extends Typestate<TContext> = { value: any; context: TContext }
     > {
-        send: (event: TEvent | TEvent['type']) => void;
+        send: (event: TEvent | TEvent["type"]) => void;
         subscribe: (listener: StateListener<State<TContext, TEvent, TState>>) => {
             unsubscribe: () => void;
         };
-        start: (initialState?: TState['value'] | { context: TContext; value: TState['value'] }) => Service<TContext, TEvent, TState>;
+        start: (initialState?: TState["value"] | { context: TContext; value: TState["value"] }) => Service<TContext, TEvent, TState>;
         stop: () => Service<TContext, TEvent, TState>;
         getStatus: () => InterpreterStatus;
         getState: () => State<TContext, TEvent, TState>;
@@ -147,4 +147,4 @@ export interface Typestate<TContext extends object> {
     context: TContext;
 }
 
-export type ExtractEvent<TEvent extends EventObject, TEventType extends TEvent['type']> = TEvent extends { type: TEventType } ? TEvent : never;
+export type ExtractEvent<TEvent extends EventObject, TEventType extends TEvent["type"]> = TEvent extends { type: TEventType } ? TEvent : never;

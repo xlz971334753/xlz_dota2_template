@@ -1,4 +1,4 @@
-import type { InitEvent } from './types';
+import type { InitEvent } from "./types";
 import {
     ContextFrom,
     EventFrom,
@@ -9,12 +9,12 @@ import {
     StateFrom,
     StateMachine,
     Typestate,
-} from './types';
+} from "./types";
 
 export { StateMachine, EventObject, InterpreterStatus, Typestate, MachineImplementationsFrom, StateFrom, EventFrom, ContextFrom, ServiceFrom };
 
-const INIT_EVENT: InitEvent = { type: 'xstate.init' };
-const ASSIGN_ACTION: StateMachine.AssignAction = 'xstate.assign';
+const INIT_EVENT: InitEvent = { type: "xstate.init" };
+const ASSIGN_ACTION: StateMachine.AssignAction = "xstate.assign";
 
 function toArray<T>(item: T | T[] | undefined): T[] {
     return item === undefined ? [] : ([] as T[]).concat(item);
@@ -34,12 +34,12 @@ function toActionObject<TContext extends object, TEvent extends EventObject>(
     action: string | StateMachine.ActionFunction<TContext, TEvent> | StateMachine.ActionObject<TContext, TEvent>,
     actionMap: StateMachine.ActionMap<TContext, TEvent> | undefined
 ) {
-    action = typeof action === 'string' && actionMap && actionMap[action] ? actionMap[action] : action;
-    return typeof action === 'string'
+    action = typeof action === "string" && actionMap && actionMap[action] ? actionMap[action] : action;
+    return typeof action === "string"
         ? {
               type: action,
           }
-        : typeof action === 'function'
+        : typeof action === "function"
         ? {
               type: tostring(action), // it is ok since it will be converted to function: 0x00c00d38 in lua vm
               exec: action,
@@ -50,11 +50,11 @@ function toActionObject<TContext extends object, TEvent extends EventObject>(
 const IS_PRODUCTION = !IsInToolsMode();
 
 function createMatcher(value: string) {
-    return stateValue => value === stateValue;
+    return (stateValue) => value === stateValue;
 }
 
-function toEventObject<TEvent extends EventObject>(event: TEvent['type'] | TEvent): TEvent {
-    return (typeof event === 'string' ? { type: event } : event) as TEvent;
+function toEventObject<TEvent extends EventObject>(event: TEvent["type"] | TEvent): TEvent {
+    return (typeof event === "string" ? { type: event } : event) as TEvent;
 }
 
 function createUnchangedState<TC extends object, TE extends EventObject, TS extends Typestate<TC>>(
@@ -78,17 +78,17 @@ function handleActions<TContext extends object, TEvent extends EventObject = Eve
     let nextContext = context;
     let assigned = false;
 
-    const nonAssignActions = actions.filter(action => {
+    const nonAssignActions = actions.filter((action) => {
         if (action.type === ASSIGN_ACTION) {
             assigned = true;
             let tmpContext = Object.assign({}, nextContext);
 
-            if (typeof action.assignment === 'function') {
+            if (typeof action.assignment === "function") {
                 tmpContext = action.assignment(nextContext, eventObject);
             } else {
                 Object.keys(action.assignment).forEach((key: any) => {
                     tmpContext[key] =
-                        typeof action.assignment[key] === 'function' ? action.assignment[key](nextContext, eventObject) : action.assignment[key];
+                        typeof action.assignment[key] === "function" ? action.assignment[key](nextContext, eventObject) : action.assignment[key];
                 });
             }
 
@@ -112,7 +112,7 @@ export function createMachine<
     } = {}
 ): StateMachine.Machine<TContext, TEvent, TState> {
     if (!IS_PRODUCTION) {
-        Object.keys(fsmConfig.states).forEach(state => {
+        Object.keys(fsmConfig.states).forEach((state) => {
             if (fsmConfig.states[state].states) {
                 throw new Error(`Nested finite states not supported.
               Please check the configuration for the "${state}" state.`);
@@ -121,7 +121,7 @@ export function createMachine<
     }
 
     const [initialActions, initialContext] = handleActions(
-        toArray(fsmConfig.states[fsmConfig.initial].entry).map(action => toActionObject(action, implementations.actions)),
+        toArray(fsmConfig.states[fsmConfig.initial].entry).map((action) => toActionObject(action, implementations.actions)),
         fsmConfig.context!,
         INIT_EVENT as TEvent
     );
@@ -137,14 +137,14 @@ export function createMachine<
         },
         transition: (
             state: string | StateMachine.State<TContext, TEvent, TState>,
-            event: TEvent | TEvent['type']
+            event: TEvent | TEvent["type"]
         ): StateMachine.State<TContext, TEvent, TState> => {
-            const { value, context } = typeof state === 'string' ? { value: state, context: fsmConfig.context! } : state;
+            const { value, context } = typeof state === "string" ? { value: state, context: fsmConfig.context! } : state;
             const eventObject = toEventObject<TEvent>(event);
             const stateConfig = fsmConfig.states[value];
 
             if (!IS_PRODUCTION && !stateConfig) {
-                throw new Error(`State '${value}' not found on machine ${fsmConfig.id ?? ''}`);
+                throw new Error(`State '${value}' not found on machine ${fsmConfig.id ?? ""}`);
             }
 
             if (stateConfig.on) {
@@ -155,7 +155,7 @@ export function createMachine<
                         return createUnchangedState(value, context);
                     }
 
-                    const { target, actions = [], cond = () => true } = typeof transition === 'string' ? { target: transition } : transition;
+                    const { target, actions = [], cond = () => true } = typeof transition === "string" ? { target: transition } : transition;
 
                     const isTargetless = target === undefined;
 
@@ -163,13 +163,13 @@ export function createMachine<
                     const nextStateConfig = fsmConfig.states[nextStateValue];
 
                     if (!IS_PRODUCTION && !nextStateConfig) {
-                        throw new Error(`State '${nextStateValue}' not found on machine ${fsmConfig.id ?? ''}`);
+                        throw new Error(`State '${nextStateValue}' not found on machine ${fsmConfig.id ?? ""}`);
                     }
 
                     if (cond(context, eventObject)) {
                         const allActions = (
-                            isTargetless ? toArray(actions) : ([] as any[]).concat(stateConfig.exit, actions, nextStateConfig.entry).filter(a => a)
-                        ).map<StateMachine.ActionObject<TContext, TEvent>>(action => toActionObject(action, (machine as any)._options.actions));
+                            isTargetless ? toArray(actions) : ([] as any[]).concat(stateConfig.exit, actions, nextStateConfig.entry).filter((a) => a)
+                        ).map<StateMachine.ActionObject<TContext, TEvent>>((action) => toActionObject(action, (machine as any)._options.actions));
 
                         const [nonAssignActions, nextContext, assigned] = handleActions(allActions, context, eventObject);
 
@@ -219,13 +219,13 @@ export function interpret<
 
     const service = {
         _machine: machine,
-        send: (event: TEvent | TEvent['type']): void => {
+        send: (event: TEvent | TEvent["type"]): void => {
             if (status !== InterpreterStatus.Running) {
                 return;
             }
             state = machine.transition(state, event);
             executeStateActions(state, toEventObject(event));
-            listeners.forEach(listener => listener(state));
+            listeners.forEach((listener) => listener(state));
         },
         subscribe: (listener: StateMachine.StateListener<typeof state>) => {
             listeners.add(listener);
@@ -235,9 +235,9 @@ export function interpret<
                 unsubscribe: () => listeners.delete(listener),
             };
         },
-        start: (initialState?: TState['value'] | { context: TContext; value: TState['value'] }) => {
+        start: (initialState?: TState["value"] | { context: TContext; value: TState["value"] }) => {
             if (initialState) {
-                const resolved = typeof initialState === 'object' ? initialState : { context: machine.config.context!, value: initialState };
+                const resolved = typeof initialState === "object" ? initialState : { context: machine.config.context!, value: initialState };
                 state = {
                     value: resolved.value,
                     actions: [],
@@ -249,7 +249,7 @@ export function interpret<
                     if (!(state.value in machine.config.states)) {
                         throw new Error(
                             `Cannot start service in state '${state.value}'. The state is not found on machine${
-                                machine.config.id ? ` '${machine.config.id}'` : ''
+                                machine.config.id ? ` '${machine.config.id}'` : ""
                             }.`
                         );
                     }

@@ -1,16 +1,61 @@
 {
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit"
-    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "prettier.tabWidth": 4,
     "[typescript]": {
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
     "[javascript]": {
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
+    "[less]": {
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
     "[json]": {
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "html.format.wrapLineLength": 0,
+    "explorer.confirmDragAndDrop": false,
+    "typescript.format.semicolons": "insert",
+    "files.eol": "\r\n",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "scss.lint.argumentsInColorFunction": "ignore",
+    "scss.lint.hexColorLength": "ignore",
+    "dota2-tools.No longer prompt": true,
+    "[jsonc]": {
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    // "editor.formatOnSave": true,
+    "eslint.ignoreUntitled": true,
     "eslint.run": "onSave",
+    "eslint.format.enable": false,
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    // 排除一些文件的跳转搜索
+    "search.exclude": {
+        "**/*.mp3": true,
+        "**/*.wav": true,
+        "**/*.tga": true,
+        "**/*.psd": true,
+        "**/*.png": true,
+        "**/*.vsndevts_c": true,
+        "**/*.vmdl": true,
+        "**/*.vmdl_c": true,
+        "**/*.vsnd": true,
+        "**/*.vsnd_c": true,
+        "**/*.vpcf": true,
+        "**/*.vpcf_c": true,
+        "**/*.vmat": true,
+        "**/*.vmat_c": true,
+        "**/*.fbx": true,
+        "**/*.FBX": true,
+        "**/*.vtex": true,
+        "**/*.vtex_c": true,
+        "**/*.vsnap": true,
+        "**/*.vsnap_c": true,
+        "**/*.vanim_c": true
+    },
+    "[snippets]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

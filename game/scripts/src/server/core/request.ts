@@ -1,15 +1,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import { ApiRequestOptions } from './ApiRequestOptions';
-import { Headers, NoSignatureURLs, OpenAPIConfig } from './OpenAPI';
+import { ApiRequestOptions } from "./ApiRequestOptions";
+import { Headers, NoSignatureURLs, OpenAPIConfig } from "./OpenAPI";
 
 const isDefined = <T>(value: T | null | undefined): boolean => {
     return value !== undefined && value !== null;
 };
 
 const isString = (value: any): value is string => {
-    return typeof value === 'string';
+    return typeof value === "string";
 };
 
 const getQueryString = (params: Record<string, any>): string => {
@@ -22,10 +22,10 @@ const getQueryString = (params: Record<string, any>): string => {
     const process = (key: string, value: any) => {
         if (isDefined(value)) {
             if (Array.isArray(value)) {
-                value.forEach(v => {
+                value.forEach((v) => {
                     process(key, v);
                 });
-            } else if (typeof value === 'object') {
+            } else if (typeof value === "object") {
                 Object.entries(value).forEach(([k, v]) => {
                     process(`${key}[${k}]`, v);
                 });
@@ -40,15 +40,14 @@ const getQueryString = (params: Record<string, any>): string => {
     });
 
     if (qs.length > 0) {
-        return `?${qs.join('&')}`;
+        return `?${qs.join("&")}`;
     }
 
-    return '';
+    return "";
 };
 
 const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
-    const path = options.url
-        .replace('{api-version}', config.VERSION);
+    const path = options.url.replace("{api-version}", config.VERSION);
 
     const url = `${config.BASE}${path}`;
     if (options.query) {
@@ -59,21 +58,24 @@ const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
 
 const getHeaders = (config: OpenAPIConfig, options: ApiRequestOptions): Record<string, string> => {
     const headers = Object.entries({
-        Accept: 'application/json',
+        Accept: "application/json",
         ...config.HEADERS,
         ...options.headers,
     })
         .filter(([_, value]) => isDefined(value))
-        .reduce((headers, [key, value]) => ({
-            ...headers,
-            [key]: tostring(value),
-        }), {} as Record<string, string>);
+        .reduce(
+            (headers, [key, value]) => ({
+                ...headers,
+                [key]: tostring(value),
+            }),
+            {} as Record<string, string>
+        );
 
     if (options.body) {
         if (options.mediaType) {
-            headers['Content-Type'] = options.mediaType;
+            headers["Content-Type"] = options.mediaType;
         } else if (isString(options.body)) {
-            headers['Content-Type'] = 'text/plain';
+            headers["Content-Type"] = "text/plain";
         }
     }
 
@@ -82,7 +84,7 @@ const getHeaders = (config: OpenAPIConfig, options: ApiRequestOptions): Record<s
 
 const getRequestBody = (options: ApiRequestOptions): any => {
     if (options.body) {
-        if (options.mediaType?.includes('/json')) {
+        if (options.mediaType?.includes("/json")) {
             return json.encode(options.body);
         } else if (isString(options.body)) {
             return options.body;
@@ -95,13 +97,13 @@ const getRequestBody = (options: ApiRequestOptions): any => {
 
 const throwError = (result: CScriptHTTPResponse): void => {
     const errors: Record<number, string> = {
-        400: 'Bad Request',
-        401: 'Unauthorized',
-        403: 'Forbidden',
-        404: 'Not Found',
-        500: 'Internal Server Error',
-        502: 'Bad Gateway',
-        503: 'Service Unavailable'
+        400: "Bad Request",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        500: "Internal Server Error",
+        502: "Bad Gateway",
+        503: "Service Unavailable",
     };
 
     const __error = errors[result.StatusCode];
@@ -123,10 +125,7 @@ export const sendRequest = async (
     sign: boolean,
     authKey: string
 ): Promise<CScriptHTTPResponse> => {
-    let request = CreateHTTPRequestScriptVM(
-        options.method,
-        url
-    );
+    let request = CreateHTTPRequestScriptVM(options.method, url);
 
     for (const [k, v] of Object.entries(headers)) {
         request.SetHTTPRequestHeaderValue(k, v);
@@ -143,7 +142,7 @@ export const sendRequest = async (
     request.SetHTTPRequestNetworkActivityTimeout(config.NETWORK_ACTIVITY_TIMEOUT);
     const send = () => {
         return new Promise<CScriptHTTPResponse>((resolve, reject) => {
-            request.Send(result => {
+            request.Send((result) => {
                 resolve(result);
             });
         });
@@ -176,7 +175,7 @@ export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions): P
                     let data = JSON.decode(response.Body);
                     if (data && data.state == `ERROR`) {
                         // reject(`${data.errorCode ?? `UNKNOWN ERROR CODE`} : ${data.errorMessage ?? 'No Message'}`);
-                        reject({ errorCode: data.errorCode ?? `UNKNOWN ERROR CODE`, errorMessage: data.errorMessage ?? 'No Message' });
+                        reject({ errorCode: data.errorCode ?? `UNKNOWN ERROR CODE`, errorMessage: data.errorMessage ?? "No Message" });
                     } else {
                         if (data != null) resolve(data);
                     }

@@ -13,14 +13,14 @@
  *    fs.write('./game/scripts/src/test.ts', 'to be or not to be, it is a problem\r\n');
  * */
 export class fs {
-    public static request(method: 'PUT' | 'GET' | 'POST', url: string) {
+    public static request(method: "PUT" | "GET" | "POST", url: string) {
         const request = CreateHTTPRequestScriptVM(method, `http://localhost:10384${url}`);
         return request;
     }
 
     public static dir(path: string): Promise<string[]> {
         return new Promise((resolve, reject) => {
-            fs.request('GET', path).Send(result => {
+            fs.request("GET", path).Send((result) => {
                 if (result.StatusCode !== 200) {
                     reject(result.Body);
                 } else {
@@ -32,7 +32,7 @@ export class fs {
 
     public static read(path: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            fs.request('GET', path).Send(result => {
+            fs.request("GET", path).Send((result) => {
                 if (result.StatusCode !== 200) {
                     reject(result.Body);
                 } else {
@@ -44,9 +44,9 @@ export class fs {
 
     public static write(path: string, content: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            const request = fs.request('PUT', path);
-            request.SetHTTPRequestRawPostBody('application/json', content);
-            request.Send(result => {
+            const request = fs.request("PUT", path);
+            request.SetHTTPRequestRawPostBody("application/json", content);
+            request.Send((result) => {
                 if (result.StatusCode !== 200) {
                     reject(result.Body);
                 } else {
@@ -58,7 +58,7 @@ export class fs {
 
     public static mkdir(path: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            fs.request('POST', path).Send(result => {
+            fs.request("POST", path).Send((result) => {
                 if (result.StatusCode !== 200) {
                     reject(result.Body);
                 } else {

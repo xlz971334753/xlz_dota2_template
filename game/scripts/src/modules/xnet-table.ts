@@ -1,4 +1,4 @@
-import { reloadable } from '../utils/tstl-utils';
+import { reloadable } from "../utils/tstl-utils";
 
 function get_table_size(t: any) {
     // 如果不是table，那么直接返回长度
@@ -43,7 +43,7 @@ export class XNetTable {
         print(`[XNetTable] Activated`);
         this._startHeartbeat();
         // 注册事件监听
-        ListenToGameEvent(`player_connect_full`, keys => this._onPlayerConnectFull(keys), this);
+        ListenToGameEvent(`player_connect_full`, (keys) => this._onPlayerConnectFull(keys), this);
     }
 
     Reload() {
@@ -152,7 +152,7 @@ export class XNetTable {
         const size = get_table_size(value);
 
         // 判断是否一帧执行了多次更新，如果是，那么报错要求用户优化代码
-        const mark_name = `${playerId ?? 'all'}.${tname}.${k}`;
+        const mark_name = `${playerId ?? "all"}.${tname}.${k}`;
         const now = GameRules.GetGameTime();
         const last_update_time = this._last_update_time_mark[mark_name] ?? 0;
         if (now == last_update_time) {
@@ -217,7 +217,7 @@ export class XNetTable {
         // 如果数据需要分割，那么他们将会拥有同样的unique_id
         // 另外会有第二个参数（index），用来标记这个数据是第几个chunk
         // 第三个参数则是这个chunk的大小
-        const unique_id = DoUniqueString('');
+        const unique_id = DoUniqueString("");
         const data_length = string.len(data);
 
         if (data_length > chunk_size) {

@@ -1,8 +1,8 @@
-import React from 'react';
-import type { Dispatch, SetStateAction } from 'react';
-import type { LocalEvent } from '../def/local_event_def';
-import { onLocalEvent, useLocalEvent } from '../utils/event-bus';
-import useStateIfMounted from './useStateIfMounted';
+import React from "react";
+import type { Dispatch, SetStateAction } from "react";
+import type { LocalEvent } from "../def/local_event_def";
+import { onLocalEvent, useLocalEvent } from "../utils/event-bus";
+import useStateIfMounted from "./useStateIfMounted";
 
 /**
  * 类似于useGameEvent，但是他的数据会被缓存
@@ -23,7 +23,7 @@ export function useXNetTableEvent<TABLE_NAME extends keyof XNetTableDefinitions,
     callback: (data: T[KEY]) => void
 ) {
     const _callback = React.useCallback(
-        (data: LocalEvent['x_net_table']) => {
+        (data: LocalEvent["x_net_table"]) => {
             if (data.table_name.toString() === table_name && data.key.toString() === key) {
                 callback(data.content);
                 GameUI.CustomUIConfig().__x_nettable_cache__[<string>table_name][<string>key] = data.content;
@@ -51,7 +51,7 @@ export function onXNetTableEvent<TABLE_NAME extends keyof XNetTableDefinitions, 
     key: KEY,
     callback: (data: T[KEY]) => void
 ) {
-    onLocalEvent(`x_net_table`, data => {
+    onLocalEvent(`x_net_table`, (data) => {
         if (data.table_name.toString() === table_name && data.key.toString() === key) {
             callback(data.content);
         }
@@ -79,7 +79,7 @@ export function useXNetTableKey<TABLE_NAME extends keyof XNetTableDefinitions, T
     const [value, setValue] = useStateIfMounted<T[KEY]>(current_value ?? fail_safe_value);
 
     const callback = React.useCallback(
-        data => {
+        (data) => {
             if (data.table_name.toString() === table_name && data.key.toString() === key) {
                 setValue(data.content);
             }
