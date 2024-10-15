@@ -1,5 +1,7 @@
 import { CommandManager } from "./CommandManager";
 import { GameConfig } from "./GameConfig";
+import { GameEventManager } from "./GameEventManager";
+import { TestMap } from "./TestMap";
 import { XNetTable } from "./xnet-table";
 
 declare global {
@@ -15,13 +17,14 @@ declare global {
  * 因此在这里作为单例模式使用
  **/
 export function ActivateModules() {
-    // TODO 这样是不是不能reload啊?
     if (GameRules.XNetTable == null) {
         // 初始化所有的GameRules模块
         GameRules.XNetTable = new XNetTable();
         // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
         new GameConfig();
-        // 初始化测试模块xD
+        new GameEventManager();
+        new TestMap();
+        // 初始化测试模块
         GameRules.CommandManager = new CommandManager();
     }
 }
