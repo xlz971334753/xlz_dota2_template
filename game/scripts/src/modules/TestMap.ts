@@ -5,8 +5,8 @@ export class TestMap {
     constructor() {
         if (IsTestMap()) {
             this.activate();
-            ListenToGameEvent("npc_spawned", (event) => this.npc_spawned(event), undefined);
-            ListenToGameEvent("game_rules_state_change", () => this.game_rules_state_change(), undefined);
+            ListenToGameEvent("npc_spawned", (event) => this._OnNpcSpawned(event), undefined);
+            ListenToGameEvent("game_rules_state_change", () => this._OnGameRulesStateChange(), undefined);
         }
     }
 
@@ -29,30 +29,17 @@ export class TestMap {
         SendToConsole("dota_easybuy 1");
     }
 
-    public static CreatDummyInTestMap() {
-        if (IsTestMap()) {
-            for (let index = 1; index <= 5; index++) {
-                const name: string = "dummy_" + index;
-                CreateUnitByName("npc_dota_hero_target_dummy", Entities.FindByName(null, name).GetAbsOrigin(), true, null, null, 4);
-            }
+    private _CreatDummyInTestMap() {
+        for (let index = 1; index <= 5; index++) {
+            const name: string = "dummy_" + index;
+            CreateUnitByName("npc_dota_hero_target_dummy", Entities.FindByName(null, name).GetAbsOrigin(), true, null, null, 4);
         }
     }
 
-    private npc_spawned(event) {
+    private _OnNpcSpawned(event) {
         const unit = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC;
         if (unit.IsRealHero()) {
             GameRules.SetGlyphCooldown(unit.GetTeam(), 0);
-            unit as CDOTA_BaseNPC_Hero;
-            if (!unit.HasShard()) {
-                // unit.AddItemByName("item_aghanims_shard");
-                // unit.AddItemByName("item_event_golden_axe");
-                // unit.AddItemByName("item_event_silver_axe");
-            }
-            // Timer(() => {
-            //     if (IsValid(unit)) {
-            //         CustomPrecache(unit.GetUnitName(), "hero");
-            //     }
-            // }, 0.5);
         }
         const bad_fort = Entities.FindByName(null, "dota_badguys_fort");
         if (IsValid(bad_fort) && bad_fort.IsBaseNPC()) {
@@ -62,11 +49,12 @@ export class TestMap {
         }
     }
 
-    private game_rules_state_change() {
+    private _OnGameRulesStateChange() {
         const newState = GameRules.State_Get();
         // GAME_IN_PROGRESS
         if (newState == GameState.GAME_IN_PROGRESS) {
             GameRules.SpawnNeutralCreeps();
+            this._CreatDummyInTestMap();
         }
     }
 }
