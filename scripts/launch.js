@@ -1,6 +1,6 @@
-const path = require('path');
-const { getDotaPath } = require('./utils');
-const { launchDota2 } = require('./launchDota2');
+const path = require("path");
+const { getDotaPath } = require("./utils");
+const { launchDota2 } = require("./launchDota2");
 
 (async () => {
     let addon_name;
@@ -10,10 +10,10 @@ const { launchDota2 } = require('./launchDota2');
     const params = script.match(/"(?:\\?[\S\s])*?"/g);
     if (params != null && params.length > 0) {
         if (params.length == 1) {
-            map_name = params[0].replace(/"/g, '');
+            map_name = params[0].replace(/"/g, "");
         } else {
-            addon_name = params[0].replace(/"/g, '');
-            map_name = params[1].replace(/"/g, '');
+            addon_name = params[0].replace(/"/g, "");
+            map_name = params[1].replace(/"/g, "");
         }
     }
 
@@ -35,10 +35,10 @@ const { launchDota2 } = require('./launchDota2');
                 }
             }
         }
-    } else console.log('Usage `yarn launch [[addon name] map name]`');
+    } else console.log("Usage `yarn launch [[addon name] map name]`");
 
     launchDota2(addon_name, map_name);
-})().catch(error => {
+})().catch((error) => {
     console.error(error);
     process.exit(1);
 });

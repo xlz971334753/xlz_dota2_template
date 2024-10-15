@@ -1,23 +1,23 @@
-const walk = require('walk');
-const fs = require('fs');
-const anyMatch = require('anymatch');
-const path = require('path');
+const walk = require("walk");
+const fs = require("fs");
+const anyMatch = require("anymatch");
+const path = require("path");
 
-const select = require('@inquirer/select');
-const input = require('@inquirer/input');
+const select = require("@inquirer/select");
+const input = require("@inquirer/input");
 
-const config = require('./addon.config.js');
-const color = require('cli-color');
-const { execSync } = require('child_process');
-const { launchDota2 } = require('./launchDota2');
+const config = require("./addon.config.js");
+const color = require("cli-color");
+const { execSync } = require("child_process");
+const { launchDota2 } = require("./launchDota2");
 
 (async () => {
     const mode = await select.default({
-        message: '请选择发布模式',
+        message: "请选择发布模式",
         choices: [
-            { name: `正式发布 PRODUCTION 对应密钥："${config.encryptDedicatedServerKeyRelease}"`, value: 'release' },
-            { name: `测试发布 ONLINETEST 对应密钥："${config.encryptDedicatedServerKeyRelease_Test}"`, value: 'release_test' },
-            { name: `本地测试 LOCAL TEST 对应密钥："${config.encryptDedicatedServerKeyTest}"`, value: 'test' },
+            { name: `正式发布 PRODUCTION 对应密钥："${config.encryptDedicatedServerKeyRelease}"`, value: "release" },
+            { name: `测试发布 ONLINETEST 对应密钥："${config.encryptDedicatedServerKeyRelease_Test}"`, value: "release_test" },
+            { name: `本地测试 LOCAL TEST 对应密钥："${config.encryptDedicatedServerKeyTest}"`, value: "test" },
         ],
     });
 
@@ -31,12 +31,12 @@ const { launchDota2 } = require('./launchDota2');
             ? config.encryptDedicatedServerKeyRelease_Test
             : config.encryptDedicatedServerKeyTest;
 
-    const getPublishPath = source => source.replace(/^game/, 'publish');
+    const getPublishPath = (source) => source.replace(/^game/, "publish");
 
     const stats = {}; // stastics file count of copy, ignore and encrypted
-    const walker = walk.walk('game');
+    const walker = walk.walk("game");
     walker
-        .on('file', (root, fileStats, next) => {
+        .on("file", (root, fileStats, next) => {
             const fileName = path.join(root, fileStats.name);
             if (anyMatch(excludeFiles, fileName)) {
                 // ignore the files we dont want to publish
@@ -48,20 +48,23 @@ const { launchDota2 } = require('./launchDota2');
                     // console.log(`[publish.js] [create-path] ->${root}`);
                 }
                 if (anyMatch(encryptFiles, fileName)) {
-                    execSync(`lua scripts/encrypt_file.lua "${fileName}" "${getPublishPath(fileName)}" ${dedicatedServerKey}`, (err, out) => {
-                        if (err) console.error(`[加密文件：] ->${fileName}`, err);
-                        if (!err) {
-                            stats.encrypted = stats.encrypted ? stats.encrypted + 1 : 1;
-                            console.log(`[加密文件：] ->${fileName} successed with key ${dedicatedServerKey}`);
+                    execSync(
+                        `"scripts\\lua\\lua.exe" "scripts\\encrypt_file.lua" "${fileName}" "${getPublishPath(fileName)}" ${dedicatedServerKey}`,
+                        (err, out) => {
+                            if (err) console.error(`[加密文件：] ->${fileName}`, err);
+                            if (!err) {
+                                stats.encrypted = stats.encrypted ? stats.encrypted + 1 : 1;
+                                console.log(`[加密文件：] ->${fileName} successed with key ${dedicatedServerKey}`);
+                            }
                         }
-                    });
+                    );
                 } else {
                     console.log(`[复制文件：] ->${fileName}`);
                     fs.copyFileSync(fileName, getPublishPath(fileName));
                     stats.copy = stats.copy ? stats.copy + 1 : 1;
                 }
                 if (/addon_game_mode\.lua$/.test(fileName)) {
-                    const addonGameMode = fs.readFileSync(getPublishPath(fileName), 'utf8');
+                    const addonGameMode = fs.readFileSync(getPublishPath(fileName), "utf8");
                     const timeStamp = new Date();
                     // format to yyyy-mm-dd hh:mm
                     const timeStampString = `${timeStamp.getFullYear()}-${
@@ -79,16 +82,16 @@ const { launchDota2 } = require('./launchDota2');
         .on(`end`, async () => {
             console.log(`[文件数量统计] -> ${JSON.stringify(stats, null, 4)}`);
 
-            console.log('发布完成！');
-            console.log('发布模式是:' + color.red(mode == `release` ? `正式发布` : mode == `release_test` ? `在线测试` : `本地测试`));
-            console.log('正在启动dota2...');
+            console.log("发布完成！");
+            console.log("发布模式是:" + color.red(mode == `release` ? `正式发布` : mode == `release_test` ? `在线测试` : `本地测试`));
+            console.log("正在启动dota2...");
 
             const addon_name = config.addon_name;
 
             if (mode != `release` && mode != `release_test`) {
                 // 本地测试模式，要求用户输入地图名称
                 const mapName = await input.default({
-                    message: '请输入你要测试的地图名：',
+                    message: "请输入你要测试的地图名：",
                 });
                 console.log(color.red(`正在启动dota2，请查看加密后的游戏是否正常运行！`));
                 await launchDota2(`${addon_name}_publish`, mapName);

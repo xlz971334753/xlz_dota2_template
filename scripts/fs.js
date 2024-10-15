@@ -1,50 +1,51 @@
 // code from expose-fs
 // https://github.com/mafintosh/expose-fs/blob/master/server.js
-var http = require('http');
-var fs = require('fs');
-var after = require('after-all');
-var pump = require('pump');
-var path = require('path');
-var mkdirp = require('mkdirp');
-var cors = require('cors');
-var url = require('url');
+var http = require("http");
+var fs = require("fs");
+var after = require("after-all");
+var pump = require("pump");
+var path = require("path");
+var mkdirp = require("mkdirp");
+var cors = require("cors");
+var url = require("url");
 
 module.exports = function (root) {
-    if (!root) root = '/';
+    if (!root) root = "/";
     root = fs.realpathSync(root);
 
     var onrequest = function (req, res) {
         var qs = url.parse(req.url, true).query;
 
         var trim = function (u) {
-            u = u.replace(root, '');
-            if (u[0] !== '/') u = '/' + u;
+            u = u.replace(root, "");
+            if (u[0] !== "/") u = "/" + u;
             return u;
         };
 
         var onerror = function (err) {
             if (!err) return res.end();
-            res.statusCode = err.code === 'ENOENT' ? 404 : 500;
+            res.statusCode = err.code === "ENOENT" ? 404 : 500;
             res.end(err.message);
         };
 
-        var name = path.join('/', req.url.split('?')[0]).replace(/%20/g, ' ');
+        var name = path.join("/", req.url.split("?")[0]).replace(/%20/g, " ");
         var u = path.join(root, name);
 
-        if (req.method === 'POST')
+        if (req.method === "POST") {
             mkdirp(u)
                 .then(() => res.end())
                 .catch(onerror);
-        if (req.method === 'PUT') return pump(req, fs.createWriteStream(u), onerror);
+        }
+        if (req.method === "PUT") return pump(req, fs.createWriteStream(u), onerror);
 
         var onfile = function (st) {
-            server.emit('file', u, st);
-            res.setHeader('Content-Length', st.size);
+            server.emit("file", u, st);
+            res.setHeader("Content-Length", st.size);
             pump(fs.createReadStream(u), res);
         };
 
         var ondirectory = function (st) {
-            server.emit('directory', u, st);
+            server.emit("directory", u, st);
             fs.readdir(u, function (err, files) {
                 if (err) return onerror(err);
 
@@ -61,7 +62,7 @@ module.exports = function (root) {
                         files[i] = {
                             path: trim(path.join(u, file)),
                             mountPath: path.join(u, file),
-                            type: st.isDirectory() ? 'directory' : 'file',
+                            type: st.isDirectory() ? "directory" : "file",
                             size: st.size,
                         };
 

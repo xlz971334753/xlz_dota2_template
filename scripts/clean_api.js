@@ -13,7 +13,7 @@ const gameServiceNew = gameService
 // 输出所有API作为types
 const apis = gameServiceNew.match(/url:\s*(['"][a-zA-Z0-9\/]+['"])/g);
 const api_type_string = apis
-    .map(api => {
+    .map((api) => {
         return api.replace(/url:\s*/g, ``);
     })
     .sort()
