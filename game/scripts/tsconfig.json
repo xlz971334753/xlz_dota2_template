@@ -10,7 +10,7 @@
             // enum简洁模式API
             "@moddota/dota-lua-types/normalized",
             // 日光 API
-            "sunlight-dota2-utils/dist/types/sunlight_types"
+            "sunlight-dota2-utils/dist/types"
         ],
         // "types": ["@moddota/dota-lua-types"], // enum完整模式API
         "plugins": [
