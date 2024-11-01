@@ -3,7 +3,7 @@ import { reloadable } from "../utils/tstl-utils";
 @reloadable
 export class GameEventManager {
     private _OnPlayerChat(event: PlayerChatEvent) {
-        GameRules.CommandManager.OnPlayerChat(event);
+        Modules.CommandManager.OnPlayerChat(event);
     }
 
     constructor() {

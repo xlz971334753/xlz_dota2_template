@@ -5,11 +5,13 @@ import { TestMap } from "./TestMap";
 import { XNetTable } from "./xnet-table";
 
 declare global {
-    interface CDOTAGameRules {
-        // 声明所有的GameRules模块，这个主要是为了方便其他地方的引用（保证单例模式）
+    interface CDOTAGameRules {}
+    interface Modules {
+        // 声明所有的模块，这个主要是为了方便其他地方的引用（保证单例模式）
         XNetTable: XNetTable;
         CommandManager: CommandManager;
     }
+    var Modules: Modules;
 }
 
 /**
@@ -17,14 +19,16 @@ declare global {
  * 因此在这里作为单例模式使用
  **/
 export function ActivateModules() {
-    if (GameRules.XNetTable == null) {
-        // 初始化所有的GameRules模块
-        GameRules.XNetTable = new XNetTable();
+    if (!Modules) {
         // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
         new GameConfig();
         new GameEventManager();
         new TestMap();
-        // 初始化测试模块
-        GameRules.CommandManager = new CommandManager();
+
+        // 初始化所有的模块
+        Modules = {
+            XNetTable: new XNetTable(),
+            CommandManager: new CommandManager(),
+        };
     }
 }
